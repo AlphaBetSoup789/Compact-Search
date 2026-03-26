@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "oracle-knowledge": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["mcp-server/dist/index.js"],
+      "env": {
+        "ORACLE_API_KEY": ""
+      }
+    }
+  }
+}
