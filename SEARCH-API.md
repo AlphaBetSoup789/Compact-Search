@@ -21,7 +21,7 @@ Single contract for all consumers: MCP server, OpenClaw, scripts, and any HTTP c
 ```json
 {
   "query": "How do I connect Prisma to Postgres?",
-  "limit": 5,
+  "limit": 3,
   "git_repo": null,
   "feed_type": null,
   "release_version": null
@@ -31,7 +31,7 @@ Single contract for all consumers: MCP server, OpenClaw, scripts, and any HTTP c
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `query` | string | Yes | Natural language or keyword search. |
-| `limit` | number | No | Max results. **Recommendation:** 1–3 for targeted queries, 3–7 for broad "walk me through" queries. Default 3. Avoid 10 — wastes tokens. Callers can set per preference. |
+| `limit` | number | No | Max results. **Default: 3** (token-efficient). **Broader** “walk me through” queries often need **5–7**. Narrow/targeted queries: **1–3**. Avoid 10 — wastes tokens. |
 | `git_repo` | string | No | Filter by repository slug (e.g. `prisma/prisma`). |
 | `feed_type` | string | No | Filter by `feed_type` (e.g. `oracle`). |
 | `release_version` | string | No | Filter by version. Use prefix match so "15" matches 15, 15.x, 15.2.1. Prefer major-only. |
@@ -74,7 +74,7 @@ Return at least `source_url`, `summary` (from `structured_payload.summary`), and
 ## Notes
 
 - **`release_version` filter:** Use prefix match — `"15"` matches `15`, `15.x`, `15.2.1`. Prefer major-only unless you need a specific minor.
-- **MCP `oracle_search`:** The tool exposes a `version` argument; the MCP server maps it to `release_version` in this request body.
+- **MCP `oracle_search`:** Defaults `limit` to **3**; agents may pass **5–7** for broader tasks. The tool exposes a `version` argument; the MCP server maps it to `release_version` in this request body.
 
 ---
 

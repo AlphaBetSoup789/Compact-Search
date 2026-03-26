@@ -60,7 +60,7 @@ On Windows use the full path with forward slashes, e.g. `C:/Users/You/compact-pu
 
 - **oracle_search**
   - `query` (required): natural language or keyword.
-  - `limit` (optional): max results, default 5.
+  - `limit` (optional): max results, default **3**; use **5–7** for broader walk-through queries.
   - `git_repo` (optional): filter by repo (e.g. `prisma/prisma`).
   - `version` (optional): major or prefix version; sent to the API as `release_version`.
 - **oracle_log**

@@ -34,7 +34,7 @@ Authorization: Bearer <api-key>
 
 {
   "query":    "set up Shadcn UI in Next.js",  // required
-  "limit":    7,                               // optional; see SEARCH-API.md for recommendations
+  "limit":    3,                               // optional; default 3 — use 5–7 for broader queries
   "git_repo": "shadcn-ui/ui",                 // optional, owner/repo filter
   "release_version": "14"                     // optional, prefix match (MCP tool arg: version)
 }
@@ -131,7 +131,7 @@ the token cost to fetch results then discard them client-side.
 
 ### Default limit
 
-The public MCP server defaults `limit` to **5**. Broader guidance: use **7** when you want adjacent procedures (e.g. init + add-component); use **1–3** for narrow queries to save tokens. See [SEARCH-API.md](SEARCH-API.md).
+The public MCP server defaults `limit` to **3** (saves tokens). For **broader** “walk me through” queries, use **5–7** so adjacent procedures (e.g. init + add-component) can surface. Narrow/targeted queries: **1–3**. See [SEARCH-API.md](SEARCH-API.md).
 
 ---
 
@@ -149,7 +149,7 @@ The public MCP server defaults `limit` to **5**. Broader guidance: use **7** whe
 2. Parse response using the fallback chain above
 3. Handle `similarity` as a string percentage
 4. Use `MIN_SIMILARITY = 0.75` as the soft threshold
-5. Default `limit = 7`
+5. Default `limit = 3`; use **5–7** for broad queries when building a custom client
 6. Log cache misses to `https://gate.usecompact.dev/log` (see [SEARCH-API.md § Log endpoint](SEARCH-API.md#log-endpoint-cache-misses))
 
 See `CLIENTS.md` for per-client configuration examples.

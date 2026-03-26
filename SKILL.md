@@ -51,7 +51,7 @@ Content-Type: application/json
 }
 ```
 
-**Limit (results):** Targeted/specific query → 1–3 (fewer tokens). Broad "walk me through" query → 3–7. Avoid 10 — wastes tokens.
+**Limit (results):** Default **3** when unspecified (MCP and efficient API use). Targeted queries → **1–3**. Broader “walk me through” queries → **5–7**. Avoid 10 — wastes tokens.
 
 The `git_repo` filter is optional but recommended when you know the exact library. `version` is optional (major version only). Examples:
 - `"prisma/prisma"` for Prisma

@@ -139,7 +139,13 @@ server.registerTool(
       "Compact: versioned, procedural docs for third-party APIs and libraries (Stripe, Supabase, Prisma, Next.js, Auth.js, Drizzle, Zod, 70+). Use before generating integration code. Returns exact procedures, code snippets, prerequisites, and common errors. Less context, better code.",
     inputSchema: {
       query: z.string().describe("Natural language or keyword search (e.g. 'How to connect Prisma to Postgres')"),
-      limit: z.number().min(1).max(20).optional().default(5).describe("Max number of results (default 5)"),
+      limit: z
+        .number()
+        .min(1)
+        .max(20)
+        .optional()
+        .default(3)
+        .describe("Max results (default 3). Use 5–7 for broader walk-through queries; avoid 10."),
       git_repo: z.string().optional().describe("Filter by repo e.g. prisma/prisma"),
       version: z
         .string()

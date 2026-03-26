@@ -28,7 +28,7 @@ One MCP tool call before the code gets written. No new model, no fine-tuning, no
 **Endpoint:** `https://gate.usecompact.dev/search`  
 **Method:** `POST`  
 **Auth:** `Authorization: Bearer <your-api-key>`  
-**Body:** `{ "query": "how do I connect Prisma to Postgres", "limit": 5, "git_repo": "prisma/prisma" }`
+**Body:** `{ "query": "how do I connect Prisma to Postgres", "limit": 3, "git_repo": "prisma/prisma" }` — default **3**; broader queries often use **5–7**.
 
 ```bash
 curl -s -X POST https://gate.usecompact.dev/search \

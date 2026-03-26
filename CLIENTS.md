@@ -138,4 +138,4 @@ rather than environment variables, but `ORACLE_API_KEY` is still an env var.
 
 ## Query limit
 
-Use 1–3 results for targeted searches (fewer tokens), 3–7 for broad "walk me through" queries. Avoid 10 — wastes tokens.
+**Default:** **3** results (MCP `oracle_search` and recommended API default). **Broader** “walk me through” queries often need **5–7**. **Targeted** searches: **1–3** (fewer tokens). Avoid 10 — wastes tokens.
