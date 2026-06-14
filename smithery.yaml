@@ -1,0 +1,21 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - oracleApiKey
+    properties:
+      oracleApiKey:
+        type: string
+        description: Your Compact API key. Free beta key at usecompact.dev.
+  commandFunction:
+    |-
+    (config) => ({
+      command: 'node',
+      args: ['dist/index.js'],
+      env: {
+        ORACLE_API_KEY: config.oracleApiKey,
+        ORACLE_SEARCH_API_URL: 'https://api.usecompact.dev/webhook/search/oracle',
+        ORACLE_LOG_API_URL: 'https://api.usecompact.dev/webhook/log'
+      }
+    })
