@@ -5,13 +5,13 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "oracle-knowledge-mcp": "dist/index.js",
-    "oracle-mcp": "dist/index.js"
+    "oracle-knowledge-mcp": "dist/stdio.js",
+    "oracle-mcp": "dist/stdio.js"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx src/index.ts",
+    "start": "node dist/stdio.js",
+    "dev": "tsx src/stdio.ts",
     "prepublishOnly": "npm run build"
   },
   "engines": {

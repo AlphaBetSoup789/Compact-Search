@@ -11,10 +11,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { ServerContext } from "@smithery/sdk";
 
-const SEARCH_API_URL =
-  process.env.ORACLE_SEARCH_API_URL || "https://gate.usecompact.dev/search";
-const LOG_API_URL =
-  process.env.ORACLE_LOG_API_URL || "https://gate.usecompact.dev/log";
+const DEFAULT_SEARCH_URL = "https://gate.usecompact.dev/search";
+const DEFAULT_LOG_URL = "https://gate.usecompact.dev/log";
 
 export const configSchema = z.object({
   oracleApiKey: z
@@ -24,8 +22,11 @@ export const configSchema = z.object({
 
 export default function createServer({
   config,
+  env,
 }: ServerContext<z.infer<typeof configSchema>>) {
   const apiKey = config.oracleApiKey;
+  const SEARCH_API_URL = env?.ORACLE_SEARCH_API_URL || process.env.ORACLE_SEARCH_API_URL || DEFAULT_SEARCH_URL;
+  const LOG_API_URL = env?.ORACLE_LOG_API_URL || process.env.ORACLE_LOG_API_URL || DEFAULT_LOG_URL;
 
   function authHeaders(): Record<string, string> {
     const headers: Record<string, string> = {};
