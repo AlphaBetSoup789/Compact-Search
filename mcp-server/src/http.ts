@@ -38,21 +38,26 @@ const httpServer = createHttpServer(async (req, res) => {
       return;
     }
 
-    // Create a fresh server instance for this session
-    const server = createMcpServer({
-      config: { oracleApiKey },
-      env: process.env as Record<string, string>,
-    });
+    try {
+      const server = createMcpServer({
+        config: { oracleApiKey },
+        env: process.env as Record<string, string>,
+      });
 
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: undefined, // stateless
-    });
+      const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: undefined, // stateless
+      });
 
-    // Connect server to transport
-    await server.connect(transport);
-
-    // Handle the HTTP request
-    await transport.handleRequest(req, res);
+      await server.connect(transport);
+      await transport.handleRequest(req, res);
+      await server.close();
+    } catch (err) {
+      console.error("MCP request error:", err);
+      if (!res.headersSent) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+      }
+    }
     return;
   }
 
