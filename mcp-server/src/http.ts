@@ -32,11 +32,8 @@ const httpServer = createHttpServer(async (req, res) => {
       process.env.ORACLE_API_KEY ||
       "";
 
-    if (!oracleApiKey && req.method === "POST") {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Missing oracleApiKey. Pass via X-Config-OracleApiKey header or ?oracleApiKey query param." }));
-      return;
-    }
+    // Allow requests without API key for tool discovery (Smithery scanning).
+    // Tool execution will fail gracefully if no key is provided.
 
     try {
       const server = createMcpServer({
@@ -48,9 +45,9 @@ const httpServer = createHttpServer(async (req, res) => {
         sessionIdGenerator: undefined, // stateless
       });
 
+      res.on("close", () => server.close());
       await server.connect(transport);
       await transport.handleRequest(req, res);
-      await server.close();
     } catch (err) {
       console.error("MCP request error:", err);
       if (!res.headersSent) {
