@@ -5,13 +5,13 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "oracle-knowledge-mcp": "dist/index.js",
-    "oracle-mcp": "dist/index.js"
+    "oracle-knowledge-mcp": "dist/stdio.js",
+    "oracle-mcp": "dist/stdio.js"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx src/index.ts",
+    "start": "node dist/stdio.js",
+    "dev": "tsx src/stdio.ts",
     "prepublishOnly": "npm run build"
   },
   "engines": {
@@ -42,7 +42,8 @@
   "homepage": "https://usecompact.dev",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "zod": "^3.23.0"
+    "@smithery/sdk": "^4.3.0",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

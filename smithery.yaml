@@ -1,14 +1,5 @@
-# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
-startCommand:
-  type: stdio
-  configSchema:
-    type: object
-    required:
-      - oracleApiKey
-    properties:
-      oracleApiKey:
-        type: string
-        description: Your Compact API key. Free beta key at usecompact.dev.
-  commandFunction:
-    |-
-    (config) => ({ command: 'node', args: ['dist/index.js'], env: { ORACLE_API_KEY: config.oracleApiKey } })
+# Smithery configuration — Compact MCP Server
+# Hosted HTTP deployment; base directory: mcp-server/
+# See mcp-server/smithery.yaml for runtime config.
+runtime: typescript
+
