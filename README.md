@@ -43,7 +43,7 @@ curl -s -X POST https://gate.usecompact.dev/search \
 
 ## Use in your IDE (MCP)
 
-The **Compact MCP server** exposes **`oracle_search`** (query the cache) and **`oracle_log`** (report cache misses) so Cursor, Claude Code, Gemini, and other MCP clients can use Compact before writing code and feed the learning loop.
+The **Compact MCP server** exposes **`oracle_search`** (query the cache) so Cursor, Claude Code, Gemini, and other MCP clients can use Compact before writing code.
 
 **From this repo:**
 

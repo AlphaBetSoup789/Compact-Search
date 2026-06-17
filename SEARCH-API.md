@@ -80,7 +80,7 @@ Return at least `source_url`, `summary` (from `structured_payload.summary`), and
 
 ## Log endpoint (cache misses)
 
-Used by the MCP tool `oracle_log` and by OpenClaw when configured. URL: `https://gate.usecompact.dev/log`.
+Log endpoint for cache misses (not currently active). URL: `https://gate.usecompact.dev/log`.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

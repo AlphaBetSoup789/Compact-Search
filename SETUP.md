@@ -1,6 +1,6 @@
 # Compact — MCP & client setup
 
-Quick reference for getting Compact (`oracle_search` / `oracle_log`) running in each client. Full multi-client table and OpenClaw: [CLIENTS.md](CLIENTS.md). MCP server build: [mcp-server/README.md](mcp-server/README.md).
+Quick reference for getting Compact (`oracle_search`) running in each client. Full multi-client table and OpenClaw: [CLIENTS.md](CLIENTS.md). MCP server build: [mcp-server/README.md](mcp-server/README.md).
 
 ---
 

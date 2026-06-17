@@ -128,7 +128,6 @@ To use Compact in a different workspace, create `.vscode/mcp.json` there with th
 |---|---|---|
 | `ORACLE_API_KEY` | **Yes** | MCP server + OpenClaw skill — beta API key sent as `Authorization: Bearer`. Get one at [usecompact.dev](https://usecompact.dev). |
 | `ORACLE_SEARCH_API_URL` | No (defaults to gate) | MCP server — override only if instructed |
-| `ORACLE_LOG_API_URL` | No (defaults to gate) | MCP server (`oracle_log` tool) |
 | `ORACLE_SEARCH_API_KEY` | No | Alias for `ORACLE_API_KEY` (wins if both set) |
 
 For OpenClaw, the search and log URLs come from `~/.openclaw/openclaw.json`

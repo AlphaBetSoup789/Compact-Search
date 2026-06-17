@@ -15,7 +15,7 @@ const server = createServer({ config: { oracleApiKey: apiKey }, env: process.env
 const transport = new StdioServerTransport();
 
 server.connect(transport).then(() => {
-  console.error("Compact MCP server running on stdio (oracle_search, oracle_log)");
+  console.error("Compact MCP server running on stdio (oracle_search)");
 }).catch((err: unknown) => {
   console.error("Fatal:", err);
   process.exit(1);
