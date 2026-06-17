@@ -59,10 +59,17 @@ export default function createServer({
         headers,
         body: JSON.stringify(body),
       });
-      const data = (await res.json()) as { matches?: unknown[]; error?: string };
+      const raw = await res.json();
       if (!res.ok) {
-        return { error: data?.error || res.statusText || `HTTP ${res.status}` };
+        const errData = raw as { error?: string };
+        return { error: errData?.error || res.statusText || `HTTP ${res.status}` };
       }
+      // API returns [{query, count, matches}] (array) — unwrap first element
+      if (Array.isArray(raw) && raw.length > 0) {
+        const first = raw[0] as { matches?: unknown[]; error?: string };
+        return { matches: first.matches ?? [], error: first.error };
+      }
+      const data = raw as { matches?: unknown[]; error?: string };
       return data;
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
