@@ -58,17 +58,13 @@ export default function createServer({
         body: JSON.stringify(body),
       });
       const raw = await res.json();
+      // Unwrap array wrapper if present (API returns [{...}])
+      const unwrapped = Array.isArray(raw) && raw.length > 0 ? raw[0] : raw;
+      const data = unwrapped as { matches?: unknown[]; error?: string };
       if (!res.ok) {
-        const errData = raw as { error?: string };
-        return { error: errData?.error || res.statusText || `HTTP ${res.status}` };
+        return { error: data?.error || res.statusText || `HTTP ${res.status}` };
       }
-      // API returns [{query, count, matches}] (array) — unwrap first element
-      if (Array.isArray(raw) && raw.length > 0) {
-        const first = raw[0] as { matches?: unknown[]; error?: string };
-        return { matches: first.matches ?? [], error: first.error };
-      }
-      const data = raw as { matches?: unknown[]; error?: string };
-      return data;
+      return { matches: data.matches ?? [], error: data.error };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error("Compact: search API request failed:", msg);

@@ -130,5 +130,4 @@ OpenClaw uses the Compact **skill** (HTTP to the API), not the MCP server. See [
 |----------|----------|---------|
 | `ORACLE_API_KEY` | **Yes** | Beta API key; sent as `Authorization: Bearer` and `X-API-Key`. Get one at [usecompact.dev](https://usecompact.dev). |
 | `ORACLE_SEARCH_API_URL` | No (defaults to gate) | Override the search endpoint only if instructed. |
-| `ORACLE_LOG_API_URL` | No (defaults to gate) | Override the log endpoint only if instructed. |
 | `ORACLE_SEARCH_API_KEY` | No | Alias for `ORACLE_API_KEY`; wins if both are set. |
