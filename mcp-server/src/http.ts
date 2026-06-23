@@ -25,12 +25,9 @@ const httpServer = createHttpServer(async (req, res) => {
 
   // MCP endpoint
   if (url.pathname === "/mcp") {
-    // Extract config from headers or query params
+    // Extract config from header only (no query-param or env fallback)
     const oracleApiKey =
-      req.headers["x-config-oracleapikey"] as string ||
-      url.searchParams.get("oracleApiKey") ||
-      process.env.ORACLE_API_KEY ||
-      "";
+      (req.headers["x-config-oracleapikey"] as string) || "";
 
     // Allow requests without API key for tool discovery (Smithery scanning).
     // Tool execution will fail gracefully if no key is provided.
