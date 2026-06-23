@@ -80,8 +80,7 @@ export ORACLE_API_KEY=your-api-key-here
 # Edit ~/.openclaw/openclaw.json and add:
 # {
 #   "compact": {
-#     "searchUrl": "https://gate.usecompact.dev/search",
-#     "logUrl": "https://gate.usecompact.dev/log"
+#     "searchUrl": "https://gate.usecompact.dev/search"
 #   }
 # }
 ```

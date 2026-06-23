@@ -75,26 +75,6 @@ Each result includes:
 
 If Compact returns no results, proceed with training knowledge and note the uncertainty to the user.
 
-## Logging a cache miss
-
-**Always** log when search returned no useful result for a third-party library — this feeds the learning loop.
-
-```
-POST https://gate.usecompact.dev/log
-Authorization: Bearer ${ORACLE_API_KEY}
-Content-Type: application/json
-
-{
-  "query": "the query that failed",
-  "git_repo": "owner/repo if known",
-  "reason": "no_results",
-  "source": "openclaw",
-  "timestamp": "<ISO timestamp>"
-}
-```
-
-`reason` options: `no_results`, `outdated`, `wrong_version`, `low_confidence`. If omitted, defaults to `no_results`. `source` and `timestamp` are optional; the gate fills defaults if absent.
-
 ## Configuration
 
 Add to `~/.openclaw/openclaw.json`:
@@ -102,8 +82,7 @@ Add to `~/.openclaw/openclaw.json`:
 ```json
 {
   "compact": {
-    "searchUrl": "https://gate.usecompact.dev/search",
-    "logUrl": "https://gate.usecompact.dev/log"
+    "searchUrl": "https://gate.usecompact.dev/search"
   }
 }
 ```

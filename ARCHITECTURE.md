@@ -149,6 +149,5 @@ The public MCP server defaults `limit` to **3** (saves tokens). For **broader** 
 3. Handle `similarity` as a string percentage
 4. Use `MIN_SIMILARITY = 0.75` as the soft threshold
 5. Default `limit = 3`; use **5–7** for broad queries when building a custom client
-6. Log cache misses to `https://gate.usecompact.dev/log` (see [SEARCH-API.md § Log endpoint](SEARCH-API.md#log-endpoint-cache-misses))
 
 See `CLIENTS.md` for per-client configuration examples.
