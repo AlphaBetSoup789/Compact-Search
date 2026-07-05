@@ -32,9 +32,25 @@ Single contract for all consumers: MCP server, OpenClaw, scripts, and any HTTP c
 |-------|------|----------|-------------|
 | `query` | string | Yes | Natural language or keyword search. |
 | `limit` | number | No | Max results. **Default: 3** (token-efficient). **Broader** “walk me through” queries often need **5–7**. Narrow/targeted queries: **1–3**. Avoid 10 — wastes tokens. |
-| `git_repo` | string | No | Filter by repository slug (e.g. `prisma/prisma`). |
-| `feed_type` | string | No | Filter by `feed_type` (e.g. `oracle`). |
+| `git_repo` | string | No | Filter by repository slug (e.g. `prisma/prisma`) or, for LLM cards, the model's `provider/model-id` (e.g. `anthropic/claude-opus-4.8`). |
+| `feed_type` | string | No | Filter by content type. See **Content types** below. Omit to search across all types. |
 | `release_version` | string | No | Filter by version. Use prefix match so "15" matches 15, 15.x, 15.2.1. Prefer major-only. |
+
+---
+
+## Content types (`feed_type`)
+
+Compact indexes more than library docs. Pass `feed_type` to scope a query:
+
+| `feed_type` | Content | Example query |
+|---|---|---|
+| `oracle` | Third-party API/library docs — install steps, config, code snippets (default corpus) | `"connect Prisma to Postgres"` |
+| `llm-card` | Structured LLM model cards — pricing, context window, benchmarks, capabilities, privacy tier | `"best coding model under $5 per 1M output tokens"` |
+| `design-md` | Curated design-system / UI style references | `"minimal SaaS dashboard design style"` |
+| `curated` | Hand-filled gap records for known documentation blind spots | — |
+| `field_trial` | Community-contributed edge cases and undocumented behavior | — |
+
+For `llm-card` results, `git_repo` is the model's `provider/model-id` (e.g. `openai/gpt-5.5`, `xai/grok-4.3`) and `structured_payload` contains `pricing`, `limits`, `capabilities`, `benchmarks`, and `task_fit` objects — see [domains/llm/expansion/LLM.md](https://github.com/AlphaBetSoup789/compact-pipeline) in the pipeline repo for the full schema.
 
 ---
 

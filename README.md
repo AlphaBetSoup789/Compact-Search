@@ -6,6 +6,13 @@
 
 Compact is a knowledge cache of actionable procedures — installation steps, configuration patterns, code snippets — extracted from official docs and from developer field trials. Agents and IDEs query it before generating integration code so they get current, versioned answers instead of outdated training data.
 
+Compact also covers two other domains via `feed_type`:
+
+- **`llm-card`** — structured LLM model cards: pricing, context windows, benchmarks, capabilities, privacy tier. Query it before recommending a model ("best coding model under $5 per 1M output tokens", "which model has a 1M context window and vision").
+- **`design-md`** — curated design-system and UI style references for visual/brand direction.
+
+See [SEARCH-API.md § Content types](SEARCH-API.md#content-types-feed_type) for the full list and query examples.
+
 ---
 
 ## Why Compact?
