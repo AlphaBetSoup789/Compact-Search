@@ -129,7 +129,7 @@ To use Compact in a different workspace, create `.vscode/mcp.json` there with th
 | `ORACLE_SEARCH_API_URL` | No (defaults to gate) | MCP server — override only if instructed |
 | `ORACLE_SEARCH_API_KEY` | No | Alias for `ORACLE_API_KEY` (wins if both set) |
 
-For OpenClaw, the search and log URLs come from `~/.openclaw/openclaw.json`
+For OpenClaw, the search URL comes from `~/.openclaw/openclaw.json`
 rather than environment variables, but `ORACLE_API_KEY` is still an env var.
 
 ---

@@ -64,6 +64,8 @@ On Windows use the full path with forward slashes, e.g. `C:/Users/You/compact-pu
   - `version` (optional): major or prefix version; sent to the API as `release_version`.
   - `feed_type` (optional): `oracle` (library/API docs, default corpus) | `llm-card` (LLM pricing/benchmarks/capabilities) | `design-md` (UI/design-system references) | `curated` | `field_trial`. Omit to search all types.
 
+**Not exposed:** `oracle_log` — removed from the public MCP surface. Untrusted agents must not write cache-miss telemetry; operators log gaps in `COMPACT-CACHE-GAPS.md` or via internal pipelines.
+
 ## API contract
 
 The server calls the endpoint described in the repo root [SEARCH-API.md](../SEARCH-API.md). Any HTTP client can use the same URL, auth header, and JSON body; MCP is optional.

@@ -39,7 +39,7 @@ export default function createServer({
 
   const server = new McpServer({
     name: "compact",
-    version: "1.2.0",
+    version: "1.2.1",
   });
 
   async function callSearchApi(body: {
