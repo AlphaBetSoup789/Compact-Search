@@ -153,6 +153,7 @@ The public MCP server defaults `limit` to **3** (saves tokens). For **broader** 
 2. Parse response using the fallback chain above
 3. Handle `similarity` as a string percentage
 4. Use `MIN_SIMILARITY = 0.75` as the soft threshold
-5. Default `limit = 3`; use **5–7** for broad queries when building a custom client
+5. Default `limit = 3`; use **5–7** for broad queries when building a custom client.
+6. Cache misses are logged **server-side** by the gate (`log_search_query` RPC) — do not POST to `/log` from agent clients. See [SEARCH-API.md § Log endpoint](SEARCH-API.md#log-endpoint-operator--internal-only).
 
 See `CLIENTS.md` for per-client configuration examples.
