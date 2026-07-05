@@ -3,8 +3,8 @@
  * Compact — MCP Server (Self-hosted HTTP entrypoint)
  *
  * Serves the MCP server over Streamable HTTP transport.
- * The Compact API key is passed per-session via the X-Config-OracleApiKey header
- * or ?oracleApiKey query param.
+ * The Compact API key is passed per-session via the X-Config-OracleApiKey
+ * header only (no query-param or env fallback — see security fix history).
  */
 
 import { createServer as createHttpServer } from "node:http";
@@ -25,12 +25,9 @@ const httpServer = createHttpServer(async (req, res) => {
 
   // MCP endpoint
   if (url.pathname === "/mcp") {
-    // Extract config from headers or query params
+    // Extract config from header only (no query-param or env fallback)
     const oracleApiKey =
-      req.headers["x-config-oracleapikey"] as string ||
-      url.searchParams.get("oracleApiKey") ||
-      process.env.ORACLE_API_KEY ||
-      "";
+      (req.headers["x-config-oracleapikey"] as string) || "";
 
     // Allow requests without API key for tool discovery (Smithery scanning).
     // Tool execution will fail gracefully if no key is provided.
