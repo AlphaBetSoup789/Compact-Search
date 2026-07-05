@@ -94,9 +94,11 @@ Return at least `source_url`, `summary` (from `structured_payload.summary`), and
 
 ---
 
-## Log endpoint (cache misses)
+## Log endpoint (operator / internal only)
 
-Used by the MCP tool `oracle_log` and by OpenClaw when configured. URL: `https://gate.usecompact.dev/log`.
+**Not exposed via public MCP.** `oracle_log` was removed from the agent-facing tool list because untrusted agents must not write to `query_log`.
+
+Operators and internal automations may POST cache misses to `https://gate.usecompact.dev/log`. Gap tracking for curation: `compact-pipeline/oracle-kit/COMPACT-CACHE-GAPS.md`.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

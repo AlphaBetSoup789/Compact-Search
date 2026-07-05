@@ -21,7 +21,6 @@ npm run build
 |--------|-------------|
 | `ORACLE_API_KEY` | **Required.** Beta API key sent as `Authorization: Bearer` and `X-API-Key`. Get one at [usecompact.dev](https://usecompact.dev). |
 | `ORACLE_SEARCH_API_URL` | Search endpoint. Default: `https://gate.usecompact.dev/search` (do not change unless instructed). |
-| `ORACLE_LOG_API_URL` | Log endpoint for `oracle_log`. Default: `https://gate.usecompact.dev/log` |
 | `ORACLE_SEARCH_API_KEY` | Alias for `ORACLE_API_KEY`; wins if both are set. |
 
 Copy `.env.example` to `.env` and fill in your key, or set `ORACLE_API_KEY` directly in your IDE's MCP env config (recommended).
@@ -64,9 +63,8 @@ On Windows use the full path with forward slashes, e.g. `C:/Users/You/compact-pu
   - `git_repo` (optional): filter by repo (e.g. `prisma/prisma`) or, for LLM cards, `provider/model-id` (e.g. `anthropic/claude-opus-4.8`).
   - `version` (optional): major or prefix version; sent to the API as `release_version`.
   - `feed_type` (optional): `oracle` (library/API docs, default corpus) | `llm-card` (LLM pricing/benchmarks/capabilities) | `design-md` (UI/design-system references) | `curated` | `field_trial`. Omit to search all types.
-- **oracle_log**
-  - `query` (required): the query that failed or was insufficient.
-  - `git_repo`, `reason`, `source`, `timestamp` (optional): see [SEARCH-API.md](../SEARCH-API.md) / OpenClaw skill for log body shape.
+
+**Not exposed:** `oracle_log` — removed from the public MCP surface. Untrusted agents must not write cache-miss telemetry; operators log gaps in `COMPACT-CACHE-GAPS.md` or via internal pipelines.
 
 ## API contract
 

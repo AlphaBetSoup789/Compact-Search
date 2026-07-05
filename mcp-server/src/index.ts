@@ -14,7 +14,6 @@ import { z } from "zod";
 import type { ServerContext } from "@smithery/sdk";
 
 const DEFAULT_SEARCH_URL = "https://gate.usecompact.dev/search";
-const DEFAULT_LOG_URL = "https://gate.usecompact.dev/log";
 
 export const configSchema = z.object({
   oracleApiKey: z
@@ -28,7 +27,6 @@ export default function createServer({
 }: ServerContext<z.infer<typeof configSchema>>) {
   const apiKey = config.oracleApiKey;
   const SEARCH_API_URL = env?.ORACLE_SEARCH_API_URL || process.env.ORACLE_SEARCH_API_URL || DEFAULT_SEARCH_URL;
-  const LOG_API_URL = env?.ORACLE_LOG_API_URL || process.env.ORACLE_LOG_API_URL || DEFAULT_LOG_URL;
 
   function authHeaders(): Record<string, string> {
     const headers: Record<string, string> = {};
@@ -41,7 +39,7 @@ export default function createServer({
 
   const server = new McpServer({
     name: "compact",
-    version: "1.2.0",
+    version: "1.2.1",
   });
 
   async function callSearchApi(body: {
@@ -77,41 +75,6 @@ export default function createServer({
       const msg = err instanceof Error ? err.message : String(err);
       console.error("Compact: search API request failed:", msg);
       return { error: msg };
-    }
-  }
-
-  async function callLogApi(body: {
-    query: string;
-    git_repo?: string | null;
-    reason?: string;
-    source?: string;
-    timestamp?: string;
-  }): Promise<{ ok: boolean; error?: string }> {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      ...authHeaders(),
-    };
-    try {
-      const res = await fetch(LOG_API_URL, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) {
-        let errText = res.statusText || `HTTP ${res.status}`;
-        try {
-          const data = (await res.json()) as { error?: string };
-          if (data?.error) errText = data.error;
-        } catch {
-          /* ignore */
-        }
-        return { ok: false, error: errText };
-      }
-      return { ok: true };
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error("Compact: log API request failed:", msg);
-      return { ok: false, error: msg };
     }
   }
 
@@ -191,45 +154,6 @@ export default function createServer({
       const text = formatMatches(matches);
       return {
         content: [{ type: "text" as const, text }],
-      };
-    }
-  );
-
-  server.registerTool(
-    "oracle_log",
-    {
-      description:
-        "Log a Compact cache miss or low-confidence result (feeds the learning loop). Call when oracle_search returned nothing useful or was wrong for a third-party library.",
-      inputSchema: {
-        query: z.string().describe("The search query that failed or was insufficient"),
-        git_repo: z.string().optional().describe("Library repo if known, e.g. prisma/prisma"),
-        reason: z
-          .enum(["no_results", "outdated", "wrong_version", "low_confidence"])
-          .optional()
-          .default("no_results")
-          .describe("Why logging"),
-        source: z.string().optional().default("mcp").describe("Caller identifier (default mcp)"),
-        timestamp: z
-          .string()
-          .optional()
-          .describe("ISO-8601 time; omit to use server-side default"),
-      },
-    },
-    async ({ query, git_repo, reason, source, timestamp }) => {
-      const result = await callLogApi({
-        query,
-        git_repo: git_repo || undefined,
-        reason,
-        source,
-        timestamp,
-      });
-      if (!result.ok) {
-        return {
-          content: [{ type: "text" as const, text: `Log failed: ${result.error}` }],
-        };
-      }
-      return {
-        content: [{ type: "text" as const, text: "Logged successfully." }],
       };
     }
   );

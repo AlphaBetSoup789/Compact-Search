@@ -9,7 +9,7 @@ shapes for contributors and anyone building a new Compact client.
 
 ```
 Client (Cursor / Claude Code / OpenClaw)
-  ↓ oracle_search({ query, limit, git_repo, version })  →  oracle_log({ ... }) on miss
+  ↓ oracle_search({ query, limit, git_repo, version, feed_type })
 MCP Server (index.js)
   ↓ POST { query, limit, git_repo, release_version }
 Gate (gate.usecompact.dev)
@@ -118,11 +118,10 @@ const simNum = typeof m.similarity === 'number'
 | Env var | Default | Description |
 |---|---|---|
 | `ORACLE_SEARCH_API_URL` | Production search URL | Search endpoint |
-| `ORACLE_LOG_API_URL` | Production log URL | Log endpoint for `oracle_log` |
 | `ORACLE_API_KEY` | `""` | Bearer + `X-API-Key` when set |
 | `ORACLE_SEARCH_API_KEY` | `""` | Same as `ORACLE_API_KEY`; wins if both are set |
 
-The bundled MCP server registers **oracle_search** and **oracle_log** and does not implement client-side similarity filtering. For custom clients, you may still apply a soft threshold (see below).
+The bundled MCP server registers **oracle_search** only (`oracle_log` removed — agents must not write to the cache-miss log). It does not implement client-side similarity filtering. For custom clients, you may still apply a soft threshold (see below).
 
 ### Similarity threshold guidance (custom clients)
 

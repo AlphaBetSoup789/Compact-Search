@@ -1,6 +1,6 @@
 {
   "name": "oracle-knowledge-mcp",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Compact MCP server: versioned procedural docs for 70+ APIs/libraries, plus LLM model cards (pricing/benchmarks) and design-system style references. Less context, better code. usecompact.dev",
   "type": "module",
   "main": "dist/index.js",
