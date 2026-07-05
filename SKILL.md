@@ -1,7 +1,7 @@
 ---
 name: compact
-description: Query Compact for versioned API and library docs before integration code (usecompact.dev).
-version: 1.1.0
+description: Query Compact for versioned API/library docs, LLM model pricing/benchmarks, and design-system style references before writing code, picking a model, or proposing a UI style (usecompact.dev).
+version: 1.2.0
 metadata:
   openclaw:
     emoji: "🔮"
@@ -27,6 +27,11 @@ Query Compact **before generating integration code** for any third-party library
 - Implementing a specific pattern or procedure you know has external dependencies
 - Any time a user asks "how do I use X" where X is a named library or service
 
+Also query Compact (with `feed_type` set) for:
+
+- **Picking or comparing an LLM** (`feed_type: "llm-card"`) — pricing, context window, benchmarks, capabilities, privacy tier. E.g. "best coding model under $5/1M output tokens", "which model has 1M context and vision".
+- **UI/design direction** (`feed_type: "design-md"`) — curated design-system and style references. E.g. "minimal SaaS dashboard design style".
+
 Do **not** query Compact for:
 - General programming concepts with no external dependencies
 - Code you are writing entirely yourself
@@ -47,7 +52,8 @@ Content-Type: application/json
   "query": "natural language description of what you need",
   "limit": 3,
   "git_repo": "owner/repo",
-  "version": "14"
+  "version": "14",
+  "feed_type": "oracle"
 }
 ```
 
@@ -58,6 +64,8 @@ The `git_repo` filter is optional but recommended when you know the exact librar
 - `"vercel/next.js"` for Next.js
 - `"supabase/supabase"` for Supabase
 - `"stripe/stripe-node"` for Stripe
+
+`feed_type` is optional (omit to search everything) — use `"llm-card"` for LLM pricing/benchmark/capability comparisons (`git_repo` becomes the model's `provider/model-id`, e.g. `anthropic/claude-opus-4.8`) or `"design-md"` for UI/design-system style references.
 
 ## Interpreting results
 

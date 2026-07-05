@@ -3,7 +3,8 @@
  * Compact — MCP Server (Self-hosted HTTP entrypoint)
  *
  * Serves the MCP server over Streamable HTTP transport.
- * The Compact API key is passed per-session via the X-Config-OracleApiKey header.
+ * The Compact API key is passed per-session via the X-Config-OracleApiKey
+ * header only (no query-param or env fallback — see security fix history).
  */
 
 import { createServer as createHttpServer } from "node:http";
@@ -59,8 +60,8 @@ const httpServer = createHttpServer(async (req, res) => {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({
       name: "Compact Knowledge MCP",
-      version: "1.1.0",
-      description: "Versioned procedural docs for 70+ APIs and libraries. Less context, better code.",
+      version: "1.2.0",
+      description: "Versioned procedural docs for 70+ APIs and libraries, plus LLM model cards (pricing/benchmarks) and design-system style references. Less context, better code.",
       mcp_endpoint: "/mcp",
       docs: "https://usecompact.dev",
     }));

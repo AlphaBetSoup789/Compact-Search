@@ -35,10 +35,15 @@ Authorization: Bearer <api-key>
 {
   "query":    "set up Shadcn UI in Next.js",  // required
   "limit":    3,                               // optional; default 3 — use 5–7 for broader queries
-  "git_repo": "shadcn-ui/ui",                 // optional, owner/repo filter
-  "release_version": "14"                     // optional, prefix match (MCP tool arg: version)
+  "git_repo": "shadcn-ui/ui",                 // optional, owner/repo (or provider/model-id) filter
+  "release_version": "14",                    // optional, prefix match (MCP tool arg: version)
+  "feed_type": "oracle"                       // optional — 'oracle' | 'llm-card' | 'design-md' | 'curated' | 'field_trial'
 }
 ```
+
+Compact covers more than library docs: `feed_type: "llm-card"` returns structured LLM model
+pricing/benchmark/capability records, and `feed_type: "design-md"` returns curated UI/design-system
+style references. See [SEARCH-API.md § Content types](SEARCH-API.md#content-types-feed_type).
 
 ---
 
