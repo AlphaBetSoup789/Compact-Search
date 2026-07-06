@@ -83,6 +83,7 @@ Each result includes:
 
 If Compact returns no results, proceed with training knowledge and note the uncertainty to the user. Do **not** POST to the log endpoint — agent writes to `query_log` are disabled on the public surface.
 
+
 ## Configuration
 
 Add to `~/.openclaw/openclaw.json`:

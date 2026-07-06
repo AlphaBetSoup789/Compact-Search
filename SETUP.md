@@ -120,7 +120,7 @@ Note: VS Code uses `"servers"` and requires `"type": "stdio"`.
 
 ## OpenClaw (skill, not MCP)
 
-OpenClaw uses the Compact **skill** (HTTP to the API), not the MCP server. See [CLIENTS.md § OpenClaw](CLIENTS.md#openclaw): copy `SKILL.md` to `~/.openclaw/skills/compact/SKILL.md`, set `ORACLE_API_KEY` and `compact.searchUrl` / `compact.logUrl` in `~/.openclaw/openclaw.json`, then `openclaw skills list --eligible`.
+OpenClaw uses the Compact **skill** (HTTP to the API), not the MCP server. See [CLIENTS.md § OpenClaw](CLIENTS.md#openclaw): copy `SKILL.md` to `~/.openclaw/skills/compact/SKILL.md`, set `ORACLE_API_KEY` and `compact.searchUrl` in `~/.openclaw/openclaw.json`, then `openclaw skills list --eligible`.
 
 ---
 
