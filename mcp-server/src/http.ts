@@ -60,7 +60,7 @@ const httpServer = createHttpServer(async (req, res) => {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({
       name: "Compact Knowledge MCP",
-      version: "1.2.0",
+      version: "1.2.1",
       description: "Versioned procedural docs for 70+ APIs and libraries, plus LLM model cards (pricing/benchmarks) and design-system style references. Less context, better code.",
       mcp_endpoint: "/mcp",
       docs: "https://usecompact.dev",

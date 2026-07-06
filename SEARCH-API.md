@@ -4,6 +4,31 @@ Single contract for all consumers: MCP server, OpenClaw, scripts, and any HTTP c
 
 ---
 
+## Agent guidance
+
+### When to query oracle
+
+Query BEFORE any third-party integration code, INCLUDING before installing/scaffolding a new dependency. Trigger is behavioral, not a fixed library list:
+
+- The library/service isn't already available locally (no bundled version-matched docs in node_modules, no project AGENTS.md section for it) → query oracle.
+- You are about to install or initialize a library and don't yet know current version, install command, or recent breaking changes → query oracle FIRST, before running install.
+- Your training data suggests a pattern — treat that as a signal to VERIFY current version/API, not confirm it. Training data skews toward older, possibly EOL versions.
+- Auth, payments, DB, deploy patterns with external deps.
+
+Do NOT query when local version-matched docs already exist for the installed version — prefer those.
+
+Other feeds: `llm-card` for model selection, `design-md` for UI direction.
+
+### Version handling
+
+Omit `release_version` by default — the RPC does **exact match**, not major/prefix. Only pass an exact `release_version` string from a prior hit. MCP `version` maps here.
+
+### EOL awareness
+
+If `structured_payload.eol_status` is `eol`, or training data points to a suspected EOL version, do not build on that pattern — verify current supported version. Use `include_eol: true` only for migration/upgrade-path queries.
+
+---
+
 ## Endpoint
 
 | Field | Value |
@@ -24,33 +49,31 @@ Single contract for all consumers: MCP server, OpenClaw, scripts, and any HTTP c
   "limit": 3,
   "git_repo": null,
   "feed_type": null,
-  "release_version": null
+  "release_version": null,
+  "include_eol": false
 }
 ```
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `query` | string | Yes | Natural language or keyword search. |
-| `limit` | number | No | Max results. **Default: 3** (token-efficient). **Broader** “walk me through” queries often need **5–7**. Narrow/targeted queries: **1–3**. Avoid 10 — wastes tokens. |
-| `git_repo` | string | No | Filter by repository slug (e.g. `prisma/prisma`) or, for LLM cards, the model's `provider/model-id` (e.g. `anthropic/claude-opus-4.8`). |
-| `feed_type` | string | No | Filter by content type. See **Content types** below. Omit to search across all types. |
-| `release_version` | string | No | **Exact match** on the stored `release_version` string (e.g. `7.8.0`, `16.3.0-canary.77`, `main`). **Omit** to search all cached versions for that repo and return the best semantic match (usually the latest extracted). Do **not** pass a major-only string like `"14"` unless a prior hit showed that exact value — it will return zero matches. MCP `version` maps here. |
+| `limit` | number | No | Max results. **Default: 3**. Broader queries: **5–7**. Avoid 10. |
+| `git_repo` | string | No | Filter by repository slug or LLM `provider/model-id`. |
+| `feed_type` | string | No | `oracle`, `llm-card`, `design-md`, `curated`, `field_trial`. Omit for all types. |
+| `release_version` | string | No | **Exact match** on stored version. **Omit** for best semantic match across cached versions. |
+| `include_eol` | boolean | No | Default `false`. When `false`, rows with `eol_status = 'eol'` are excluded from search. Set `true` for upgrade/migration queries. |
 
 ---
 
 ## Content types (`feed_type`)
 
-Compact indexes more than library docs. Pass `feed_type` to scope a query:
-
 | `feed_type` | Content | Example query |
 |---|---|---|
-| `oracle` | Third-party API/library docs — install steps, config, code snippets (default corpus) | `"connect Prisma to Postgres"` |
-| `llm-card` | Structured LLM model cards — pricing, context window, benchmarks, capabilities, privacy tier | `"best coding model under $5 per 1M output tokens"` |
-| `design-md` | Curated design-system / UI style references | `"minimal SaaS dashboard design style"` |
-| `curated` | Hand-filled gap records for known documentation blind spots | — |
-| `field_trial` | Community-contributed edge cases and undocumented behavior | — |
-
-For `llm-card` results, `git_repo` is the model's `provider/model-id` (e.g. `openai/gpt-5.5`, `xai/grok-4.3`) and `structured_payload` contains `pricing`, `limits`, `capabilities`, `benchmarks`, and `task_fit` objects — see [domains/llm/expansion/LLM.md](https://github.com/AlphaBetSoup789/compact-pipeline) in the pipeline repo for the full schema.
+| `oracle` | Library/API docs | `"connect Prisma to Postgres"` |
+| `llm-card` | LLM model cards | `"best coding model under $5 per 1M output tokens"` |
+| `design-md` | Design-system references | `"minimal SaaS dashboard design style"` |
+| `curated` | Hand-filled gap records | — |
+| `field_trial` | Community edge cases | — |
 
 ---
 
@@ -58,55 +81,49 @@ For `llm-card` results, `git_repo` is the model's `provider/model-id` (e.g. `ope
 
 ### Success (200)
 
+Wire format from n8n gate is typically an array:
+
 ```json
-{
-  "matches": [
-    {
-      "id": "uuid",
-      "source_url": "https://...",
-      "git_repo": "prisma/prisma",
-      "release_version": "5.22.0",
-      "feed_type": "oracle",
-      "summary": "Connect Prisma to PostgreSQL using connection URL...",
-      "search_text_snippet": "...",
-      "structured_payload": { ... }
-    }
-  ]
-}
+[
+  {
+    "query": "...",
+    "count": 3,
+    "matches": [
+      {
+        "rank": 1,
+        "similarity": "85%",
+        "git_repo": "prisma/prisma",
+        "release_version": "7.8.0",
+        "source_url": "...",
+        "summary": "...",
+        "procedure": [],
+        "raw_payload": { "eol_status": "current" }
+      }
+    ]
+  }
+]
 ```
 
-Return at least `source_url`, `summary` (from `structured_payload.summary`), and optionally full `structured_payload` for procedures and code. Trim large payloads if needed for token limits.
+Unwrap the first element if needed. MCP clients handle this automatically.
 
 ### Error (4xx/5xx)
 
 ```json
-{
-  "error": "message"
-}
+{ "error": "message" }
 ```
 
 ---
 
 ## Notes
 
-- **`release_version` filter (exact match):** The gate RPC compares `release_version = filter_version` literally. Passing `"14"` does **not** match `14.2.1` or `16.3.0-canary.77`. **Default: omit `release_version`** and use `git_repo` when you know the library. Only pass `release_version` when re-querying with an exact string from a previous hit's `release_version` field.
-- **MCP `oracle_search`:** Defaults `limit` to **3**; agents may pass **5–7** for broader tasks. The tool exposes a `version` argument; the MCP server maps it to `release_version` in this request body. Same rule: omit `version` unless you have an exact cached string.
-- **Wire response:** The n8n gate may return `[{ "query", "count", "matches" }]` (array) rather than a bare `{ "matches" }` object. Unwrap the first element if needed.
+- **MCP `oracle_search`:** Defaults `limit` to **3**. Maps `version` → `release_version`. Optional `include_eol` (default false).
 
 ---
 
 ## Log endpoint (operator / internal only)
 
-**Not exposed via public MCP.** `oracle_log` was removed from the agent-facing tool list because untrusted agents must not write to `query_log`.
+**Not exposed via public MCP.**
 
-Operators and internal automations may POST cache misses to `https://gate.usecompact.dev/log`. Gap tracking for curation: `compact-pipeline/oracle-kit/COMPACT-CACHE-GAPS.md`.
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `query` | string | Yes | Query that failed or was low value. |
-| `git_repo` | string | No | Library/repo if known. |
-| `reason` | string | No | e.g. `no_results`, `outdated`, `wrong_version`, `low_confidence`. |
-| `source` | string | No | Caller id (e.g. `mcp`, `openclaw`). |
-| `timestamp` | string | No | ISO-8601; server may default if omitted. |
+Operators may POST cache misses to `https://gate.usecompact.dev/log`. Gap tracking: `compact-pipeline/oracle-kit/COMPACT-CACHE-GAPS.md`.
 
 Auth: `Authorization: Bearer <your-api-key>` — required (same as search).

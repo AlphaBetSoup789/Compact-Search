@@ -48,6 +48,7 @@ export default function createServer({
     git_repo?: string | null;
     feed_type?: string | null;
     release_version?: string | null;
+    include_eol?: boolean;
   }): Promise<{ matches?: unknown[]; error?: string }> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -105,7 +106,14 @@ export default function createServer({
       const source = r?.source_url ?? "";
       const repo = r?.git_repo ?? "";
       const sim = r?.similarity != null ? ` (${r.similarity})` : "";
-      lines.push(`${i + 1}. ${repo} ${source}${sim}`);
+      let sp = (r.structured_payload ?? r.raw_payload ?? r) as Record<string, unknown> | string;
+      if (typeof sp === "string") {
+        try { sp = JSON.parse(sp) as Record<string, unknown>; } catch { sp = {}; }
+      }
+      if (typeof sp !== "object" || sp === null) sp = {};
+      const eol = (sp as Record<string, unknown>).eol_status;
+      const eolNote = eol === "eol" ? " [EOL — verify current version before using]" : "";
+      lines.push(`${i + 1}. ${repo} ${source}${sim}${eolNote}`);
       lines.push(`   ${summary}`);
       lines.push("");
     });
@@ -116,7 +124,7 @@ export default function createServer({
     "oracle_search",
     {
       description:
-        "Compact: versioned, procedural docs for third-party APIs and libraries (Stripe, Supabase, Prisma, Next.js, Auth.js, Drizzle, Zod, 70+). Also covers structured LLM model cards — pricing, context windows, benchmarks, capabilities, privacy tier (feed_type: llm-card) — for picking a model for a task or comparing cost/performance, and curated design-system / UI style references (feed_type: design-md) for visual/brand direction. Use before generating integration code, before recommending an LLM, or before proposing a UI style. Returns exact procedures, code snippets, prerequisites, and common errors. Less context, better code.",
+        "Query Compact BEFORE third-party integration code — including before install/scaffold when local docs do not exist yet. Behavioral trigger (not a fixed library list): verify patterns from training data; prefer local node_modules docs when version-matched. feed_type: oracle (library docs), llm-card (model pick/compare), design-md (UI style). Omit version unless reusing exact release_version from a prior hit. Flag EOL hits (structured_payload.eol_status) — do not build on dead versions. include_eol for upgrade-path queries only.",
       inputSchema: {
         query: z.string().describe("Natural language or keyword search (e.g. 'How to connect Prisma to Postgres', 'best model for coding agents under $5/1M output', 'minimal SaaS dashboard design style')"),
         limit: z
@@ -134,16 +142,22 @@ export default function createServer({
         feed_type: z
           .enum(["oracle", "llm-card", "design-md", "curated", "field_trial"])
           .optional()
-          .describe("Filter by content type: 'oracle' = library/API docs (default corpus), 'llm-card' = LLM model pricing/benchmarks/capabilities, 'design-md' = UI/design-system style references, 'curated' = hand-filled gap records, 'field_trial' = community-contributed edge cases. Omit to search across all types."),
+          .describe("Filter by content type. Omit to search across all types."),
+        include_eol: z
+          .boolean()
+          .optional()
+          .default(false)
+          .describe("Include EOL-tagged rows (default false). Use true only for migration/upgrade-path queries."),
       },
     },
-    async ({ query, limit, git_repo, version, feed_type }) => {
+    async ({ query, limit, git_repo, version, feed_type, include_eol }) => {
       const result = await callSearchApi({
         query,
         limit,
         git_repo: git_repo || undefined,
         release_version: version || undefined,
         feed_type: feed_type || undefined,
+        include_eol: include_eol ?? false,
       });
       if (result.error) {
         return {

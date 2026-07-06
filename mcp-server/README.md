@@ -62,9 +62,10 @@ On Windows use the full path with forward slashes, e.g. `C:/Users/You/compact-pu
   - `limit` (optional): max results, default **3**; use **5–7** for broader walk-through queries.
   - `git_repo` (optional): filter by repo (e.g. `prisma/prisma`) or, for LLM cards, `provider/model-id` (e.g. `anthropic/claude-opus-4.8`).
   - `version` (optional): exact cached `release_version` only (e.g. `7.8.0`); sent as `release_version`. Omit to search all cached versions for the repo.
-  - `feed_type` (optional): `oracle` (library/API docs, default corpus) | `llm-card` (LLM pricing/benchmarks/capabilities) | `design-md` (UI/design-system references) | `curated` | `field_trial`. Omit to search all types.
+  - `feed_type` (optional): `oracle` | `llm-card` | `design-md` | `curated` | `field_trial`. Omit to search all types.
+  - `include_eol` (optional): default **false**. Set `true` only for migration/upgrade-path queries (includes EOL-tagged rows).
 
-**Not exposed:** `oracle_log` — removed from the public MCP surface. Untrusted agents must not write cache-miss telemetry; operators log gaps in `COMPACT-CACHE-GAPS.md` or via internal pipelines.
+Query **before** install/scaffold when local docs are unavailable. Omit `version` unless reusing an exact `release_version` from a prior hit. See [SEARCH-API.md](../SEARCH-API.md) agent guidance.
 
 ## API contract
 
