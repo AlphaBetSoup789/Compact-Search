@@ -130,7 +130,7 @@ export default function createServer({
         version: z
           .string()
           .optional()
-          .describe("Major or prefix version filter (sent as release_version; e.g. 14, 15.2)"),
+          .describe("Exact release_version filter only (e.g. 7.8.0). Omit to search all cached versions. Major-only strings like 14 will not match unless stored exactly."),
         feed_type: z
           .enum(["oracle", "llm-card", "design-md", "curated", "field_trial"])
           .optional()

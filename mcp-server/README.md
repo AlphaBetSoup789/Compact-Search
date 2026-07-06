@@ -61,7 +61,7 @@ On Windows use the full path with forward slashes, e.g. `C:/Users/You/compact-pu
   - `query` (required): natural language or keyword. Also covers LLM model selection ("best coding model under $5/1M output") and design-system style lookups ("minimal SaaS dashboard style").
   - `limit` (optional): max results, default **3**; use **5–7** for broader walk-through queries.
   - `git_repo` (optional): filter by repo (e.g. `prisma/prisma`) or, for LLM cards, `provider/model-id` (e.g. `anthropic/claude-opus-4.8`).
-  - `version` (optional): major or prefix version; sent to the API as `release_version`.
+  - `version` (optional): exact cached `release_version` only (e.g. `7.8.0`); sent as `release_version`. Omit to search all cached versions for the repo.
   - `feed_type` (optional): `oracle` (library/API docs, default corpus) | `llm-card` (LLM pricing/benchmarks/capabilities) | `design-md` (UI/design-system references) | `curated` | `field_trial`. Omit to search all types.
 
 **Not exposed:** `oracle_log` — removed from the public MCP surface. Untrusted agents must not write cache-miss telemetry; operators log gaps in `COMPACT-CACHE-GAPS.md` or via internal pipelines.

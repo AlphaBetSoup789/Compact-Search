@@ -52,14 +52,13 @@ Content-Type: application/json
   "query": "natural language description of what you need",
   "limit": 3,
   "git_repo": "owner/repo",
-  "version": "14",
   "feed_type": "oracle"
 }
 ```
 
 **Limit (results):** Default **3** when unspecified (MCP and efficient API use). Targeted queries → **1–3**. Broader “walk me through” queries → **5–7**. Avoid 10 — wastes tokens.
 
-The `git_repo` filter is optional but recommended when you know the exact library. `version` is optional (major version only). Examples:
+The `git_repo` filter is optional but recommended when you know the exact library. **`version` / `release_version`:** omit by default (returns best match across cached versions). Only pass an **exact** `release_version` string from a prior hit — the gate does literal match, not major/prefix. Do not pass `"14"` from package.json unless a hit already returned `release_version: "14"`. Examples:
 - `"prisma/prisma"` for Prisma
 - `"vercel/next.js"` for Next.js
 - `"supabase/supabase"` for Supabase

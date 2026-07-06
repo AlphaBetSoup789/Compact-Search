@@ -34,7 +34,7 @@ Single contract for all consumers: MCP server, OpenClaw, scripts, and any HTTP c
 | `limit` | number | No | Max results. **Default: 3** (token-efficient). **Broader** “walk me through” queries often need **5–7**. Narrow/targeted queries: **1–3**. Avoid 10 — wastes tokens. |
 | `git_repo` | string | No | Filter by repository slug (e.g. `prisma/prisma`) or, for LLM cards, the model's `provider/model-id` (e.g. `anthropic/claude-opus-4.8`). |
 | `feed_type` | string | No | Filter by content type. See **Content types** below. Omit to search across all types. |
-| `release_version` | string | No | Filter by version. Use prefix match so "15" matches 15, 15.x, 15.2.1. Prefer major-only. |
+| `release_version` | string | No | **Exact match** on the stored `release_version` string (e.g. `7.8.0`, `16.3.0-canary.77`, `main`). **Omit** to search all cached versions for that repo and return the best semantic match (usually the latest extracted). Do **not** pass a major-only string like `"14"` unless a prior hit showed that exact value — it will return zero matches. MCP `version` maps here. |
 
 ---
 
@@ -89,8 +89,9 @@ Return at least `source_url`, `summary` (from `structured_payload.summary`), and
 
 ## Notes
 
-- **`release_version` filter:** Use prefix match — `"15"` matches `15`, `15.x`, `15.2.1`. Prefer major-only unless you need a specific minor.
-- **MCP `oracle_search`:** Defaults `limit` to **3**; agents may pass **5–7** for broader tasks. The tool exposes a `version` argument; the MCP server maps it to `release_version` in this request body.
+- **`release_version` filter (exact match):** The gate RPC compares `release_version = filter_version` literally. Passing `"14"` does **not** match `14.2.1` or `16.3.0-canary.77`. **Default: omit `release_version`** and use `git_repo` when you know the library. Only pass `release_version` when re-querying with an exact string from a previous hit's `release_version` field.
+- **MCP `oracle_search`:** Defaults `limit` to **3**; agents may pass **5–7** for broader tasks. The tool exposes a `version` argument; the MCP server maps it to `release_version` in this request body. Same rule: omit `version` unless you have an exact cached string.
+- **Wire response:** The n8n gate may return `[{ "query", "count", "matches" }]` (array) rather than a bare `{ "matches" }` object. Unwrap the first element if needed.
 
 ---
 
